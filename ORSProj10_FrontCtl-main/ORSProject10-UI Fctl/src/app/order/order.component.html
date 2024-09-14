@@ -1,0 +1,149 @@
+<app-navbar></app-navbar>
+
+<style>
+  .grad {
+    background-image: linear-gradient(to bottom right, rgb(32, 168, 168), rgb(219, 231, 237));
+    background-repeat: no-repeat;
+    background-size: 100%;
+    padding-bottom: 25px;
+  }
+</style>
+
+<style type="text/css">
+  .log1 {
+    padding-top: 13%;
+  }
+
+  .input-group-addon {
+    box-shadow: 9px 8px 7px #001a33;
+  }
+</style>
+
+<div class="row"
+  style="padding-top: 2%; padding-bottom: 2%; background: url(assets/files/wall.jpg) no-repeat center center; background-attachment: fixed; background-size: cover; width: 100%; height: auto;">
+
+  <div class="col-sm-4"></div>
+  <div class="col-sm-4">
+    <div class="card">
+      <div class="card-body input-group-addon grad">
+        <form name="userForm">
+          <h2 *ngIf="!form.data.id" class="text-primary font-weight-bold" style="text-align: center;">{{'Add Order' | translate }}</h2>
+          <h2 *ngIf="form.data.id" class="text-primary font-weight-bold" style="text-align: center;">{{'Update Order' | translate }}</h2>
+
+
+          <div *ngIf="!form.error && form.message != null" class="alert alert-success alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{form.message}}
+          </div>
+
+          <div *ngIf="form.error && form.message != null" class="alert alert-danger alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{form.message}}
+          </div>
+
+          <div>
+            <span class="pt-2"><b>{{'Product Name' | translate }}</b><span class="required-field"></span></span>
+            <div class="col-sm-12">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><i class="fa fa-box grey-text"></i></div>
+                </div>
+                <select class="form-control" name="product" [(ngModel)]="form.data.productName"
+                  aria-label="ngSelected">
+                  <option [ngValue]="" value="undefined">{{'Select Product' | translate }}</option>
+                  <option *ngFor="let obj of form.preload.productList | keyvalue" [value]="obj.key">{{obj.value}}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <span *ngIf="form.inputerror.productName != null" class="alertRedColor" style="color: red;">
+              {{'Please enter product name' | translate}}</span>
+          </div>
+
+          <div>
+            <span class="pt-2"><b>{{'Product ID' | translate }}</b><span class="required-field"></span></span>
+            <div class="col-sm-12">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><i class="fa fa-barcode grey-text"></i></div>
+                </div>
+                <input type="number" (keydown)="filterInput($event, 'errorMessageProductId', 10, 'int')"
+                  name="productId" [(ngModel)]="form.data.productId" class="form-control"
+                  placeholder="{{'Enter product ID' | translate }}" min="1">
+              </div>
+            </div>
+            <span *ngIf="form.inputerror.productId != null" class="alertRedColor" style="color: red;">
+              {{'Please enter product ID' | translate}}</span>
+          </div>
+
+          <div>
+            <span class="pt-2"><b>{{'Amount' | translate }}</b><span class="required-field"></span></span>
+            <div class="col-sm-12">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><i class="fa fa-dollar-sign grey-text"></i></div>
+                </div>
+                <input type="number" (keydown)="filterInput($event, 'errorMessageAmount', 6, 'int')" name="amount"
+                  [(ngModel)]="form.data.amount" class="form-control" placeholder="{{'Enter amount' | translate }}"
+                  min="0" step="0.01">
+              </div>
+            </div>
+            <span *ngIf="form.inputerror.amount != null" class="alertRedColor" style="color: red;">
+              {{'Please enter amount' | translate}}</span>
+          </div>
+          <div>
+            <span class="pt-2"><b>{{'Quantity' | translate }}</b><span class="required-field"></span></span>
+            <div class="col-sm-12">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><i class="fa fa-box grey-text"></i></div>
+                </div>
+                <input type="number" (keydown)="filterInput($event, 'errorMessagequantity', 5, 'int')"
+                  name="quantity" [(ngModel)]="form.data.quantity" class="form-control"
+                  placeholder="{{'Enter Quantity' | translate }}">
+              </div>
+            </div>
+            <span *ngIf="form.inputerror.quantity != null" class="alertRedColor" style="color: red;">
+              {{'Please enter  Quantity' | translate}}</span>
+          </div>
+
+          <div>
+            <span class="pt-2"><b>{{'Date of Birth' | translate }}</b><span class="required-field"></span></span>
+            <div class="col-sm-12">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><i class="fa fa-calendar grey-text"></i></div>
+                </div>
+                <input type="date" (keydown)="filterInput($event, 'errorMessageDate', 45, 'int')" name="dob"
+                  [value]="form.data.dob | date:'yyyy-MM-dd'" (input)="form.data.dob=parseDate($event.target.value)"
+                  class="form-control form-control-sm" required />
+              </div>
+            </div>
+            <span *ngIf="form.inputerror.dob != null" class="alertRedColor" style="color: red;">
+              {{'Please enter date of birth' | translate}}</span>
+          </div>
+
+          <div class="row pt-2 pl-2 pb-3">
+            <div class="col-md-3"></div>
+            <div class="pt-2">
+              <button *ngIf="!form.data.id" (click)="onUpload()" class="btn btn-success mr-2">
+                {{'Save' | translate }}</button>
+            </div>
+            <div class="col-md-1"></div>
+            <div class="pt-2">
+              <button *ngIf="form.data.id" (click)="onUpload()" class="btn btn-success mr-2">
+                {{'Update' | translate }}</button>
+            </div>
+            <div class="pt-2">
+              <a class="btn btn-warning mr-1" type="button" [routerLink]="['/orderlist']"
+                style="text-decoration: none; color: white;">{{'List' | translate }}</a>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>
